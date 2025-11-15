@@ -125,6 +125,11 @@ const server = new Server(
   }
 );
 
+// Singleton pattern is safe for stdio transport because:
+// 1. Each client launches a dedicated subprocess (process isolation)
+// 2. Stdio processes requests sequentially (no concurrent requests possible)
+// 3. Thought history must persist across sequential tool calls (feature requirement)
+// 4. Memory bounds prevent unbounded growth (see SequentialThinkingServer.MAX_*)
 const thinkingServer = new SequentialThinkingServer();
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
